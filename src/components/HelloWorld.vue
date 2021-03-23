@@ -2,14 +2,26 @@
   <div class="hello">
 
 <form @submit.prevent="submit">
-  <div class="form-group" :class="{ 'form-group--error': $v.name.$error }">
-    <label class="form__label">Name</label>
-    <input class="form__input" v-model.trim="$v.name.$model"/>
+  <div class="form-group" :class="{ 'form-group--error': $v.lastName.$error }">
+    <label class="form__label">Фамилия</label>
+    <input class="form__input" v-model.trim="$v.lastName.$model"/>
+    <div class="error" v-if="submitStatus === 'ERROR'">Поле необходимо для заполнения</div>
   </div>
-  <div class="error" v-if="!$v.name.required">Name is required</div>
+  
+  <div class="form-group" :class="{ 'form-group--error': $v.firstName.$error }">
+    <label class="form__label">Имя</label>
+    <input class="form__input" v-model.trim="$v.firstName.$model"/>
+        <div class="error" v-if="submitStatus === 'ERROR'">Поле необходимо для заполнения</div>
+  </div>
+
+  <div class="form-group" :class="{ 'form-group--error': $v.patronymic.$error }">
+    <label class="form__label">Отчество</label>
+    <input class="form__input" v-model.trim="$v.patronymic.$model"/>
+  </div>
+  
   <button class="button" type="submit" :disabled="submitStatus === 'PENDING'">Submit!</button>
   <p class="typo__p" v-if="submitStatus === 'OK'">Thanks for your submission!</p>
-  <p class="typo__p" v-if="submitStatus === 'ERROR'">Please fill the form correctly.</p>
+  <p class="typo__p error" v-if="submitStatus === 'ERROR'">Пожалуйста, заполните все необходимые поля.</p>
   <p class="typo__p" v-if="submitStatus === 'PENDING'">Sending...</p>
 </form>
 
@@ -17,7 +29,7 @@
 </template>
 
 <script>
-import { required, minLength} from 'vuelidate/lib/validators'
+import { required} from 'vuelidate/lib/validators'
 
 export default {
   name: 'HelloWorld',
@@ -26,15 +38,22 @@ export default {
   },
   data() {
     return {
-      name: '',
+      firstName: '',
+      lastName: '',
+      patronymic: '',
       age: 0,
       submitStatus: null
     }
   },
   validations: {
-    name: {
+    firstName: {
       required,
-      minLength: minLength(4)
+    },
+    lastName: {
+      required,
+    },
+    patronymic : {
+
     }
   },
   methods: {
@@ -44,7 +63,7 @@ export default {
       if (this.$v.$invalid) {
         this.submitStatus = 'ERROR'
       } else {
- 
+        // do your submit logic here
         this.submitStatus = 'PENDING'
         setTimeout(() => {
           this.submitStatus = 'OK'
@@ -61,5 +80,6 @@ export default {
   }
   .error {
     color: red;
+    font-size: 12px;
   }
 </style>
